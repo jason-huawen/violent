@@ -7,6 +7,10 @@ import queue
 
 class MyHashCrack:
     def __init__(self) -> None:
+        """
+        filename: filename of document which wants to be cracked
+        wordlist: wordlist used to crack 
+        """
         self.filename = self.get_params()[0]
         self.wordlist = self.get_params()[1]
         self.q = queue.Queue()
@@ -28,6 +32,12 @@ class MyHashCrack:
         return options.filename, options.wordlist
     
     def compare_hash_value(self, username, plaintext, salt, hash_value):
+        """
+        username:
+        plaintext:
+        salt:
+        hash_value:
+        """
         try:
             compute_value = crypt.crypt(plaintext,salt)
             if hash_value == compute_value:
