@@ -2,13 +2,19 @@ import zipfile
 import sys
 import optparse
 import os
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor   # Use thread pool to speed brute force attack
 import queue
 
 
 
 class MyZIPCracker:
     def __init__(self) -> None:
+        """
+        filename: filename of the file which will be cracked
+        wordlist: filename or filepath of the wordlist which will be used as dictionary
+        q: queue instance to store data between different threads
+        """
+
         self.filename = self.get_params()[0]
         self.wordlist = self.get_params()[1]
         self.q = queue.Queue()
@@ -37,9 +43,9 @@ class MyZIPCracker:
     
     def open_file(self,password):
         try:
-            self.zipper.extractall(pwd=password.encode('utf-8'))
+            self.zipper.extractall(pwd=password.encode('utf-8'))   # Notes: pwd should be encoded ant passed to the extractall method
             print('[-] Password Found: %s' % password)
-            self.q.put(password)
+            self.q.put(password)     # When found the password, which will be saved into self.q. This can be control signal to prevent to generate more threads
         except:
             pass
     
@@ -48,12 +54,12 @@ class MyZIPCracker:
         with open(self.wordlist) as f:
             while True:
                 try:
-                    line = f.readline()
+                    line = f.readline()      # When open big wordlist, some error will happen . This error or exception should be catched.
                 except:
                     pass
-                if len(line) ==0:
+                if len(line) ==0:            # When the file pointer goes to the end of the file, break the loop
                     break
-                if not self.q.empty():
+                if not self.q.empty():       # When self.q is not empty, it means that the password has been found without needing to go on cracking
                     break
                 if self.q.empty():
                     pool.submit(self.open_file,line.strip())
