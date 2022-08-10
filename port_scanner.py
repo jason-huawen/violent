@@ -49,7 +49,10 @@ class PortScanner:
             scan_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             scan_socket.settimeout(2)
             scan_socket.connect((self.target, port))
-            self.q.put(port)
+            send_data = 'Test from Jason'
+            scan_socket.send(send_data.encode('utf-8'))
+            recv_data = scan_socket.recv(1024).decode('utf-8')
+            self.q.put((port, recv_data))
         except:
             pass
     
@@ -63,10 +66,10 @@ class PortScanner:
             print('[-] No open port found on the target: %s' % self.target)
         else:
             print('[-] Port status for the target: %s' % self.target)
-            print('\tPort\t\tStatus')
+            print('\tPort\t\tStatus\t\tVersion')
             while not self.q.empty():
-                port = self.q.get()
-                print('\t%d\t\tOpen' % port)
+                port,banner = self.q.get()
+                print('\t%d\t\tOpen\t\t%s' % (port, banner))
 
 if __name__ == '__main__':
     scanner = PortScanner()
