@@ -1,4 +1,3 @@
-from re import L
 from lxml import etree
 import sys
 import optparse
@@ -29,7 +28,7 @@ class DownloadExtractImages:
     def make_store_dir(self):
         if not os.path.exists('images'):
             os.mkdir('images')
-            print("Created directory successfully")
+            print("[-] Created directory successfully")
     
     def retrieve_page(self, url):
        
@@ -59,7 +58,7 @@ class DownloadExtractImages:
     def store_image(self, filename, response):
         with open('images/'+filename, 'wb') as f:
             f.write(response.content)
-            print('Saved image successfully: %s' % filename)
+            print('[-] Saved image successfully: %s' % filename)
     
     def extract_exif_image(self, filepath):
         with open(filepath, 'rb') as f:
@@ -69,18 +68,18 @@ class DownloadExtractImages:
                 for each in exif_data_list:
                     print(each,' : ',image_info.each)
             else:
-                print('THe image has not exif data: %s' % filepath)
+                print('[-] THe image has not exif data: %s' % filepath)
     
     def run(self):
         self.make_store_dir()
         response = self.retrieve_page(self.url)
         if not response:
-            print('Failed to retrieve the web page: %s' % self.url)
+            print('[-] Failed to retrieve the web page: %s' % self.url)
         else:
             # print(response.text)
             self.find_image_links(response)
             if len(self.image_links) == 0:
-                print('No image found on the page')
+                print('[-] No image found on the page')
             else:
                 for link in self.image_links:
                     image_content = self.retrieve_page(link)
