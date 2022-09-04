@@ -26,3 +26,13 @@ try:
 
 except KeyboardInterrupt:
     sys.exit()
+
+
+"""
+exec.php
+<?php
+        $comment=$_REQUEST['comment'];
+        echo $comment;
+?>
+
+"""
